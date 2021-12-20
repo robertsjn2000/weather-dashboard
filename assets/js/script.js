@@ -1,5 +1,7 @@
+// Created an API key and assigned it to a variable through the third party API key.
 var ApiKey = "f8d63ae63c009db1cf285baede197f1d"
 displayHistory()
+// This function calls on the third party API to get the city location which is required to pull the city weather. 
 function getCityLocation(){
     var textBox = document.getElementById("city")
     var cityName = textBox.value
@@ -18,7 +20,7 @@ function getCityLocation(){
        getCityWeather(long, lat) 
     })
 }
-
+// This function calls on the third party API to get the city weather using the city location from the previous function as reference. 
 function getCityWeather(long, lat){
     var Url = "https://api.openweathermap.org/data/2.5/onecall?units=imperial&lat="+lat+"&lon="+long+"&appid="+ ApiKey
     fetch(Url).then(function(weather){
@@ -34,12 +36,14 @@ function getCityWeather(long, lat){
         windEl.textContent = weatherJson["current"]["wind_speed"]
         humidityEl.textContent = weatherJson["current"]["humidity"]+"%"
         uvEl.textContent = weatherJson["current"]["uvi"]
+        // created a current date variable that will display teh correct date of today and the next five days for the five day forcast. 
         var currentDate = new Date()
         console.log(currentDate);
         currentDateEl.textContent = (currentDate.getMonth()+ 1)+ "/"+ currentDate.getDate()+ "/"+ currentDate.getFullYear();
         var futureForecastEl = document.getElementById("futureForecast")
         futureForecastEl.innerHTML = ""
         for(var i =0; i<5; i++){
+            // inside this for loop divs and image elements are created and appended to the appropriate parent div. 
             var dayForecastEl = document.createElement("div")
             dayForecastEl.classList.add("col-sm-2")
             var dateEl = document.createElement("div")
@@ -64,6 +68,7 @@ function getCityWeather(long, lat){
         }
     })
 }
+// Created a function to display the history of city searches.
 function displayHistory(){
     var historyButtons = document.getElementById("history-buttons")
     if(localStorage.getItem("history")){
