@@ -4,11 +4,12 @@ This weather dashboard allows users to find a five day forecast of any city they
 ## Installation
 There are no steps for instalation. Simply run the deplyed link. 
 ## Usage
-Provide instructions and examples for use. Include screenshots as needed.
-To add a screenshot, create an `assets/images` folder in your repository and upload your screenshot to it. Then, using the relative filepath, add it to your README using the following syntax:
-    ```md
-    ![alt text](assets/images/screenshot.png)
-    ```
+
+    ![Picture of the Weather Dashboard](./assets/images/weather_dashboard.png)
+
+##
+deployed link:     
+    
 ## License
 MIT License
 

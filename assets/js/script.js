@@ -6,8 +6,13 @@ function getCityLocation(){
     var textBox = document.getElementById("city")
     var cityName = textBox.value
     var history = JSON.parse(localStorage.getItem("history"))
-    history.push(cityName)
-    localStorage.setItem("history", JSON.stringify(history))
+    if(history.indexOf(cityName)=== -1){
+        history.push(cityName)
+        localStorage.setItem("history", JSON.stringify(history))
+        displayHistory()
+    }
+    // history.push(cityName)
+    // localStorage.setItem("history", JSON.stringify(history))
     var Url = "https://api.openweathermap.org/data/2.5/weather?q="+cityName+"&appid="+ApiKey
     fetch(Url).then(function(weather){
         return weather.json();
@@ -32,10 +37,19 @@ function getCityWeather(long, lat){
         var humidityEl = document.getElementById("currentHumidity")
         var uvEl = document.getElementById("currentUv")
         var currentDateEl = document.getElementById("currentDate")
-        tempEl.textContent = weatherJson["current"]["temp"]
-        windEl.textContent = weatherJson["current"]["wind_speed"]
-        humidityEl.textContent = weatherJson["current"]["humidity"]+"%"
-        uvEl.textContent = weatherJson["current"]["uvi"]
+        tempEl.textContent = "Temp: " + weatherJson["current"]["temp"]
+        windEl.textContent = "Wind: " + weatherJson["current"]["wind_speed"]
+        humidityEl.textContent = "Humidity: " + weatherJson["current"]["humidity"]+"%"
+        var uvI = weatherJson["current"]["uvi"]
+        var span = document.createElement("span")
+        span.textContent = "UV Index: " + uvI
+        if(uvI < 2){
+            span.style = "background-color: green"
+        }
+        else{
+            span.style = "background-color: red"
+        }
+        uvEl.appendChild(span)
         // created a current date variable that will display teh correct date of today and the next five days for the five day forcast. 
         var currentDate = new Date()
         console.log(currentDate);
@@ -51,14 +65,15 @@ function getCityWeather(long, lat){
             var dayTempEl = document.createElement("div")
             var dayWindEl = document.createElement("div")
             var dayHumidityEl = document.createElement("div")
-            dayTempEl.textContent = weatherJson["daily"][i]["temp"]["day"]
-            dayWindEl.textContent = weatherJson["daily"][i]["wind_speed"]
-            dayHumidityEl.textContent = weatherJson["daily"][i]["humidity"]
+            dayTempEl.textContent = "Temp: " + weatherJson["daily"][i]["temp"]["day"]
+            dayWindEl.textContent = "Wind: " + weatherJson["daily"][i]["wind_speed"]
+            dayHumidityEl.textContent = "Humidity: " + weatherJson["daily"][i]["humidity"]
             var date = new Date()
             date.setDate(currentDate.getDate()+1+i)
             dateEl.textContent = (date.getMonth()+ 1)+ "/"+ date.getDate()+ "/"+ date.getFullYear();
             var icon = weatherJson["daily"][i]["weather"][0]["icon"]
             imageEl.src="https://openweathermap.org/img/w/"+icon+".png"
+            dayForecastEl.classList = "bg-secondary text-white card"
             dayForecastEl.appendChild(dateEl)
             dayForecastEl.appendChild(imageEl)
             dayForecastEl.appendChild(dayTempEl)
@@ -71,9 +86,12 @@ function getCityWeather(long, lat){
 // Created a function to display the history of city searches.
 function displayHistory(){
     var historyButtons = document.getElementById("history-buttons")
+    historyButtons.innerHTML=""
     if(localStorage.getItem("history")){
-        var history = JSON.parse(localStorage.history)
+        var ul = document.createElement("ul")
+        var history = JSON.parse(localStorage.getItem("history"))
         for(var i =0; i<history.length; i++){
+            var li = document.createElement("li")
             var button = document.createElement("button")
             button.innerHTML = history[i]
             button.setAttribute("cityName", history[i])
@@ -82,8 +100,10 @@ function displayHistory(){
                 textBox.value = event.target.getAttribute("cityName")
                 getCityLocation()
             })
-            historyButtons.appendChild(button)
+            li.appendChild(button)
+            ul.appendChild(li)
         }
+        historyButtons.appendChild(ul)
     }
     else{
         localStorage.setItem("history", JSON.stringify([]))
